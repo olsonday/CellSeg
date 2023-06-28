@@ -27,10 +27,10 @@ from scipy.ndimage import zoom
 from tifffile import imsave
 from sklearn.neighbors import kneighbors_graph
 
-def main():
+def main(target):
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
     tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
-    cf = CVConfig()
+    cf = CVConfig(target)
 
     print('Initializing CSSegmenter at', cf.DIRECTORY_PATH)
     if cf.IS_CODEX_OUTPUT:

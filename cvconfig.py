@@ -5,14 +5,14 @@ import pandas as pd
 import skimage
 import os
 
-class CVConfig():
+class CVConfig:
     '''
     Define your constants below.
 
     IS_CODEX_OUTPUT - CODEX output files have special filenames that allow outputs to contain more metadata about absolute positions, regs, and other things. Set this parameter to False if not using the filename convention, otherwise set it to True. Follow the naming convention in the install/run page on the CellVision website to output this metadata for non-CODEX images.
     SHOULD_COMPENSATE - (True/False) include lateral bleed compensation (Goltsev et al 2018) after single cell marker quantification (default is True)
     target - (string) path to directory containing image folder and channels file
-    output_path_name - (string) name of directory to save output in. If directory does not exist, CellVision creates directory. (default value is 'output')
+    self.output_path_name - (string) name of directory to save output in. If directory does not exist, CellVision creates directory. (default value is 'output')
     DIRECTORY_PATH - (string) directory that contains your .tif bestFocus images (usually the bestFocus folder)
     CHANNEL_PATH - (string) path to your channels file (usually named channelNames.txt). Only used for tif images with more than 3 channels, or 4D TIF images.
     NUCLEAR_CHANNEL_NAME - (string) name of nuclear stain (corresponding to channelNames.txt).  Case sensitive.  Only used for tif images with more than 3 channels, or 4D TIF images.
@@ -41,43 +41,41 @@ class CVConfig():
     
     Note:  Unfortunately, ImageJ provides no way to export to the .roi file format needed to import into ImageJ.  Additionally, we can't use numpy in ImageJ scripts.  Thus, we need to write to file and read in (using the included imagej.py script) using the ImageJ scripter if we pick output to imagej_text_file
     '''
-    # Change these!
-    IS_CODEX_OUTPUT = False
-    SHOULD_COMPENSATE = False
-    target = 'Insert path to your data'
-    output_path_name = "output"
-    DIRECTORY_PATH = os.path.join(target, 'bestFocus')
-    CHANNEL_PATH = os.path.join(target, 'channelNames.txt')
-    NUCLEAR_CHANNEL_NAME = 'Insert name of nuclear channel to segment on'
-    GROWTH_PIXELS = 0
-    GROWTH_METHOD = 'Standard'
-    OUTPUT_METHOD = 'all'
-    BOOST = 'auto'
-    AUTOBOOST_REFERENCE_IMAGE = 'Insert name of autoboost reference image' #ie 'cellimage1.tif'
-    FILENAME_ENDS_TO_EXCLUDE = ('montage.tif')
-    
-    OVERLAP = 80
-    THRESHOLD = 20
-    INCREASE_FACTOR = 2.5
-    AUTOBOOST_PERCENTILE = 99.98
-    
-    #Usually not changed, unless the file path to your model weights is not the default
-    root = os.path.dirname(os.path.realpath(__file__))
-    MODEL_DIRECTORY = os.path.join(root, 'modelFiles')
-    MODEL_PATH = os.path.join(root, 'src', 'modelFiles', 'final_weights.h5')
-    IMAGEJ_OUTPUT_PATH = os.path.join(output_path_name, 'imagej_files')
-    QUANTIFICATION_OUTPUT_PATH = os.path.join(output_path_name,'quantifications')
-    VISUAL_OUTPUT_PATH = os.path.join(output_path_name,'visual_output')
-    PROGRESS_TABLE_PATH = os.path.join(output_path_name,'progress_table.txt')
-    try:
-        os.makedirs(IMAGEJ_OUTPUT_PATH)
-        os.makedirs(QUANTIFICATION_OUTPUT_PATH)
-        os.makedirs(VISUAL_OUTPUT_PATH)
-    except FileExistsError:
-        print("Directory already exists")
 
-    #Usually not changed, except if you need to modify VALID_IMAGE_EXTENSIONS when working with unique extensions
-    def __init__(self):
+
+    def __init__(self, target):
+        self.target = target
+        self.IS_CODEX_OUTPUT = False
+        self.SHOULD_COMPENSATE = False
+        self.output_path_name = os.path.join(target, 'output')
+        self.DIRECTORY_PATH = os.path.join(target, 'tiles')
+        self.CHANNEL_PATH = os.path.join(target, 'channelNames.txt')
+        self.NUCLEAR_CHANNEL_NAME = 'DAPI'
+        self.GROWTH_PIXELS = 2
+        self.GROWTH_METHOD = 'Standard'
+        self.OUTPUT_METHOD = "statistics"
+        self.BOOST = 0.5
+        self.AUTOBOOST_REFERENCE_IMAGE = 'none' #ie 'cellimage1.tif'
+        self.FILENAME_ENDS_TO_EXCLUDE = 'none'
+
+        self.OVERLAP = 80
+        self.THRESHOLD = 20
+        self.INCREASE_FACTOR = 2.5
+        self.AUTOBOOST_PERCENTILE = 99.98
+        self.root = os.path.dirname(os.path.realpath(__file__))
+        self.MODEL_DIRECTORY = os.path.join('src','modelFiles')
+        self.MODEL_PATH = os.path.join('src', 'modelFiles', 'final_weights.h5')
+        self.IMAGEJ_OUTPUT_PATH = os.path.join(self.output_path_name, 'imagej_files')
+        self.QUANTIFICATION_OUTPUT_PATH = os.path.join(self.output_path_name,'quantifications')
+        self.VISUAL_OUTPUT_PATH = os.path.join(self.output_path_name,'visual_output')
+        self.PROGRESS_TABLE_PATH = os.path.join(self.output_path_name,'progress_table.txt')
+        try:
+            os.makedirs(self.IMAGEJ_OUTPUT_PATH)
+            os.makedirs(self.QUANTIFICATION_OUTPUT_PATH)
+            os.makedirs(self.VISUAL_OUTPUT_PATH)
+        except FileExistsError:
+            print("Directory already exists")
+
         self.CHANNEL_NAMES = pd.read_csv(
             self.CHANNEL_PATH, sep='\t', header=None).values[:, 0]
 
