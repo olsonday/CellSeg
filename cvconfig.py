@@ -63,8 +63,7 @@ class CVConfig:
         self.INCREASE_FACTOR = 2.5
         self.AUTOBOOST_PERCENTILE = 99.98
         self.root = os.path.dirname(os.path.realpath(__file__))
-        self.MODEL_DIRECTORY = os.path.join('src','modelFiles')
-        self.MODEL_PATH = os.path.join('src', 'modelFiles', 'final_weights.h5')
+        self.MODEL_PATH = os.path.join(self.root,"src/modelFiles/final_weights.h5")
         self.IMAGEJ_OUTPUT_PATH = os.path.join(self.output_path_name, 'imagej_files')
         self.QUANTIFICATION_OUTPUT_PATH = os.path.join(self.output_path_name,'quantifications')
         self.VISUAL_OUTPUT_PATH = os.path.join(self.output_path_name,'visual_output')
